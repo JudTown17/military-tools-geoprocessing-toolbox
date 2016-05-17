@@ -39,6 +39,9 @@ class ConvertCoordinatesTestCase(unittest.TestCase):
     ''' Test all tools and methods related to the Convert Coordinates tool
     in the Military Tools toolbox'''
     
+    inputTable = None
+    outputConvertTable = None
+    
     def setUp(self):
         if Configuration.DEBUG == True: print("     ConvertCoordinatesTestCase.setUp")    
         
@@ -46,6 +49,10 @@ class ConvertCoordinatesTestCase(unittest.TestCase):
         if(Configuration.militaryScratchGDB == None) or (not arcpy.Exists(Configuration.militaryScratchGDB)):
             Configuration.militaryScratchGDB = UnitTestUtilities.createScratch(Configuration.militaryDataPath)
 
+        self.inputTable = os.path.join(Configuration.militaryInputDataGDB, "SigActs")
+        self.outputConvertTable = os.path.join(Configuration.militaryScratchGDB, "outputConvert")
+        
+        UnitTestUtilities.checkFilePaths([Configuration.militaryInputDataGDB, Configuration.military_DesktopToolboxPath, Configuration.military_ProToolboxPath])
         
     def tearDown(self):
         if Configuration.DEBUG == True: print("     ConvertCoordinatesTestCase.tearDown")
@@ -63,14 +70,14 @@ class ConvertCoordinatesTestCase(unittest.TestCase):
         try:
             if Configuration.DEBUG == True: print("     ConvertCoordinatesTestCase.test_farthest_on_cirle") 
             
-            # arcpy.ImportToolbox(toolboxPath, "mdat")
-            # runToolMessage = "Running tool (Farthest On Circle)"
-            # arcpy.AddMessage(runToolMessage)
-            # Configuration.Logger.info(runToolMessage)
+            arcpy.ImportToolbox(toolboxPath, "ma")
+            runToolMessage = "Running tool (Convert Coordinates)"
+            arcpy.AddMessage(runToolMessage)
+            Configuration.Logger.info(runToolMessage)
             
-            # arcpy.FarthestOnCircle_mdat(self.position, "#", "#", self.hoursOfTransit)
+            arcpy.ConvertCoordinates_ma(self.inputTable, "#", "Location_X", "Location_Y", self.outputConvertTable)
             
-            # self.assertTrue(arcpy.Exists(self.hoursOfTransit))
+            self.assertTrue(arcpy.Exists(self.outputConvertTable))
        
             
         except arcpy.ExecuteError:
