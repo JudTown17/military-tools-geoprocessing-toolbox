@@ -78,7 +78,10 @@ class ConvertCoordinatesTestCase(unittest.TestCase):
             arcpy.ConvertCoordinates_ma(self.inputTable, "#", "Location_X", "Location_Y", self.outputConvertTable)
             
             self.assertTrue(arcpy.Exists(self.outputConvertTable))
-       
+            
+            numFieldsAfter = len(list(arcpy.ListFields(self.outputConvertTable)))
+            self.assertEqual(numFieldsAfter, int(35))
+ 
             
         except arcpy.ExecuteError:
             UnitTestUtilities.handleArcPyError()
