@@ -39,6 +39,9 @@ class TableToPolylineTestCase(unittest.TestCase):
     ''' Test all tools and methods related to the Table To Polyline tool
     in the Military Tools toolbox'''
     
+    inputTable = None
+    outputPolylines = None
+    
     def setUp(self):
         if Configuration.DEBUG == True: print("     TableToPolylineTestCase.setUp")    
         
@@ -46,6 +49,9 @@ class TableToPolylineTestCase(unittest.TestCase):
         if(Configuration.militaryScratchGDB == None) or (not arcpy.Exists(Configuration.militaryScratchGDB)):
             Configuration.militaryScratchGDB = UnitTestUtilities.createScratch(Configuration.militaryDataPath)
 
+        csvFolder = os.path.join(Configuration.militaryDataPath, "CSV")
+        self.inputTable = os.path.join(csvFolder, "TableToPolyline.csv")
+        self.outputPolylines = os.path.join(Configuration.militaryScratchGDB, "outputPolylines")
         
     def tearDown(self):
         if Configuration.DEBUG == True: print("     TableToPolylineTestCase.tearDown")
@@ -63,15 +69,14 @@ class TableToPolylineTestCase(unittest.TestCase):
         try:
             if Configuration.DEBUG == True: print("     TableToPolylineTestCase.test_table_to_polyline") 
             
-            # arcpy.ImportToolbox(toolboxPath, "mdat")
-            # runToolMessage = "Running tool (Farthest On Circle)"
-            # arcpy.AddMessage(runToolMessage)
-            # Configuration.Logger.info(runToolMessage)
+            arcpy.ImportToolbox(toolboxPath, "mt")
+            runToolMessage = "Running tool (Table To Polyline)"
+            arcpy.AddMessage(runToolMessage)
+            Configuration.Logger.info(runToolMessage)
             
-            # arcpy.CheckOutExtension("Spatial")
-            # arcpy.FarthestOnCircle_mdat(self.position, "#", "#", self.hoursOfTransit)
+            arcpy.TableToPolyline_mt(self.inputTable, "#", "#", self.outputPolylines)
             
-            # self.assertTrue(arcpy.Exists(self.hoursOfTransit))
+            self.assertTrue(arcpy.Exists(self.outputPolylines))
        
             
         except arcpy.ExecuteError:
